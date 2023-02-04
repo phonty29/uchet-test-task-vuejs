@@ -73,7 +73,7 @@
     <input 
         autofocus
         class="add-task"
-        placeholder="Add a new task"
+        placeholder="Введите новую задачу"
         @keyup.enter="addTodo"
     > 
     <div v-for="todo in filteredTodos" :key="todo.id" class="todo-item">
