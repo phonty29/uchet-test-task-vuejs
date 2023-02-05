@@ -1,8 +1,6 @@
 <script>
-    import ToDoTask from '@/components/ToDoTask.vue';
     import {useTodoStore} from '@/stores/todo';
     export default {
-        components: {ToDoTask},
         setup() {
                 const todoStore = useTodoStore();
                 return { todoStore };
