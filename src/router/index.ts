@@ -14,6 +14,10 @@ const router = createRouter({
       path: '/task/:id',
       name: 'task',
       component: TaskView
+    },
+    {
+      path: '/:pathMatch(.*)*',
+      redirect: "/"
     }
   ]
 })

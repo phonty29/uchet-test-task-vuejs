@@ -49,12 +49,12 @@
 </script>
 
 <template>
-    <div class="menu">
-        <p class="tasks-left-text"> Осталось задач 
+    <div class="options">
+        <div class="options-info"> Осталось задач 
             <span class="green">{{ incompletedTasks }} </span>
-        </p>
-        <div class="filter">
-          <h3>Фильтровать по:</h3>
+        </div>
+        <div class="options-filter">
+          <label>Фильтровать по: </label>
           <select v-model="filterBy" class="filter-box">
             <option :value="filterMethods.BY_ALL">Всем</option>
             <option :value="filterMethods.BY_COMPLETED">Завершенным</option>
@@ -62,41 +62,51 @@
           </select>
           <span class="focus"></span>
         </div>
-        <div class="delete-completed" @click="deleteCompletedTasks">
-            Удалить выделенные
+        <div class="options-delete" @click="deleteCompletedTasks">
+            <img src="/trash-bin.png" alt="delete-completed-tasks" title="Удалить помеченные задачи">
         </div>
     </div>
-    <div style="display: flex;">
-        <input autofocus class="add-task" placeholder="Ищите задачу" @input="searchTask" /> 
-        <button class="green" @click="addTask">+</button>
+    <div class="rule">
+        <input autofocus class="search-box" placeholder="Найти задачу" @input="searchTask" /> 
+        <button class="rule-add-btn" >
+            <img src="/add-button.png" alt="Add task" title="Добавить новую задачу" @click="addTask">
+        </button>
     </div>
     <to-do-task v-for="task in filteredTasks" :task="task" :key="task.id" />
 </template>
 
 <style scoped>
-    .menu {
+    .options {
         display: flex;
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
-        margin-bottom: 8px;
+        margin-bottom: 2rem;
+        margin-top: 1rem;
     }
-    .tasks-left-text {
-        color: white;
-        text-align: left;
-        margin-bottom: 6px;
+    .options-delete {
+        cursor: pointer;
     }
-    .determine-todos {
-        font-family: Verdana, sans-serif;
-        align-self: center;
-        border: solid grey;
-        border-radius: 4px;
-        color: white;
-        font-weight: bold;
-        background-color: rgb(100, 100, 100);
-        padding: 4px 8px;
+    .options-filter {
+      display: flex;
+      justify-items: center;
+      align-items: center;
     }
-    .add-task {
+    .options-filter label {
+      margin-right: 0.5rem;
+      min-width: 120px;
+    }
+    .rule {
+        display: flex;
+    }
+    .rule-add-btn {
+        background-color: inherit; 
+        border: none;
+    }
+    .rule-add-btn img {
+        cursor: pointer;
+    }
+    .search-box {
         padding: 8px;
         font-size: 14px;
         background-color: inherit;
@@ -106,24 +116,13 @@
         color: white;
         margin: 8px 0px;
     }
-    .add-task::placeholder {
+    .search-box::placeholder {
         font-size: 14px;
     }
-    .add-task:focus {
+    .search-box:focus {
         border: solid white;
         border-width: 1px;
     } 
-    .filter {
-      display: flex;
-      justify-items: center;
-      align-items: center;
-    }
-
-    .filter h3 {
-      margin-right: 1rem;
-      min-width: 135px;
-    }
-
     select {
       -webkit-appearance: none;
       -moz-appearance: none;
@@ -154,30 +153,27 @@
       border-radius: 0.25em;
       padding: 0.25em 0.5em;
       font-size: 1rem;
-      cursor: pointer;
       line-height: 1;
-      background-color: inherit;
-      background-image: linear-gradient(to top, #f9f9f9, #fff 33%);
+      cursor: pointer;
+      background-color: #d6d6d6;
     }
-    .filter-box select, .filter-box::after {
-      grid-area: select;
+    @media screen and (max-width: 550px)  {
+        .options-info {
+            display: none;
+        }
     }
-    .filter-box::after {
-      content: "";
-      justify-self: end;
-      width: 0.8em;
-      height: 0.5em;
-      background-color: var(--select-arrow);
-      -webkit-clip-path: polygon(100% 0%, 0 0%, 50% 100%);
-              clip-path: polygon(100% 0%, 0 0%, 50% 100%);
+    @media screen and (max-width: 380px)  {
+        .options-filter {
+            flex-direction: column;
+        }
+        .options-filter label {
+            margin-bottom: 0.3rem;
+        }
     }
-    select::after + .focus {
-      position: absolute;
-      top: -1px;
-      left: -1px;
-      right: -1px;
-      bottom: -1px;
-      border: 2px solid var(--select-focus);
-      border-radius: inherit;
+    @media screen and (max-width: 300px)  {
+        .search-box {
+            flex-grow: 0;
+            width: 75%;
+        }
     }
 </style>

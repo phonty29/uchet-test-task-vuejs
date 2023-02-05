@@ -1,5 +1,6 @@
 <script>
     import {useTodoStore} from '@/stores/todo';
+    import ElementsOfTaskLink from '@/utils/enum/ElementsOfTaskLink';
     export default {
       props: {
         task: {
@@ -9,7 +10,8 @@
       },
       data() {
         return {
-          isEditMode: false
+          isEditMode: false,
+          elementsOfTaskLink: ElementsOfTaskLink
         }
       },
       setup() {
@@ -28,11 +30,11 @@
           this.todoStore.editTask(this.task, newContent);
           this.isEditMode = false;
         },
-        redirectTo(event) {
-          if (!event.target.closest(".edit-button") && 
-              !event.target.closest(".delete-button") &&
-              !event.target.closest(".checkbox-container") &&
-              !event.target.closest(".edit-input")
+        redirect(event) {
+          if (!event.target.closest(this.elementsOfTaskLink.BUTTONS) && 
+              !event.target.closest(this.elementsOfTaskLink.CHECKBOX) &&
+              !event.target.closest(this.elementsOfTaskLink.INPUT) &&
+              !this.isEditMode
             ) {
             this.$router.push(`/task/${this.task.id}`);
           }
@@ -42,20 +44,26 @@
 </script>
 
 <template>
-    <a class="todo-item"  @click="redirectTo">
+    <a class="task"  @click="redirect">
         <label class="checkbox-container">
             <input type="checkbox" v-model="task.completed" @click="markAs" />
             <span class="checkbox"></span>
         </label>
         <p v-if="!isEditMode" :class="{ completed: task.completed }"> {{ task.content }} </p>
         <input v-else :value="task.content"  @keyup.enter="editTask" class="edit-input"/>
-        <button @click="isEditMode = !isEditMode" class="edit-button"> E </button>
-        <button @click="removeTask(task)" class="delete-button"> X </button>
+        <div class="task-buttons">
+          <button class="task-btn edit-btn">
+            <img src="/edit-document.png" alt="Edit task" title="Изменить задачу" @click="isEditMode = !isEditMode">
+          </button>
+          <button class="task-btn delete-btn">
+            <img src="/close.png" alt="Delete task" title="Удалить задачу" @click="removeTask(task)">
+          </button>
+        </div>
       </a> 
 </template>
 
 <style scoped>
-    .todo-item {
+    .task {
         display: flex;
         justify-content: space-between;
         border: solid rgb(57, 57, 57);
@@ -64,9 +72,6 @@
         padding: 16px;
         color: white;
     }
-    /* Customising checkbox guide https://www.w3schools.com/howto/howto_css_custom_checkbox.asp */
-    
-    /* Customise checkbox container */
     .checkbox-container {
         display: block;
         position: relative;
@@ -79,7 +84,6 @@
         -ms-user-select: none;
         user-select: none;
     }
-    /* Hide default checkbox */
     .checkbox-container input {
         position: absolute;
         opacity: 0;
@@ -87,8 +91,6 @@
         height: 0;
         width: 0;
     }
-    
-    /* Create a custom checkbox */
     .checkbox {
         height: 25px;
         width: 25px;
@@ -108,16 +110,14 @@
         position: absolute;
         display: none;
     }
-    /* Show the checkbox when checked */
     .checkbox-container input:checked ~ .checkbox:after {
         display: block;
     }
-    /* Style the checkbox */
     .checkbox-container .checkbox:after {
-        left: 9px;
+        left: 10px;
         top: 5px;
-        width: 5px;
-        height: 10px;
+        width: 6px;
+        height: 11px;
         border: solid white;
         border-width: 0 3px 3px 0;
         -webkit-transform: rotate(45deg);
@@ -126,21 +126,28 @@
     }
     .completed {
         text-decoration: line-through;
-        text-decoration-thickness: 3px;
-        color: #ccc;
+        text-decoration-thickness: 2px;
+        color: hsla(160, 100%, 37%, 1);
     }
-    .edit-button {
-        border: none;
-        font-weight: bold;
-        background-color: rgb(20, 20, 20);
-        color: white;
-        font-size: 18px;
+    .edit-input {
+      border-radius: 0.25em;
+      padding: 0 0.5em;
+      background-color: #d6d6d6;
     }
-    .delete-button {
-        border: none;
-        font-weight: bold;
-        background-color: rgb(20, 20, 20);
-        color: white;
-        font-size: 18px;
+    .task-buttons {
+      display: flex;
+    }
+    .task-btn {
+      border: none;
+      background-color: inherit;
+    }
+    .task-btn img {
+      cursor: pointer;
+    }
+
+    @media screen and (max-width: 380px)  {
+        .edit-input {
+            width: 100px;
+        }
     }
 </style>
