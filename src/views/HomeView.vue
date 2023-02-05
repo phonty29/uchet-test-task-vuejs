@@ -7,6 +7,6 @@
 
 <template>
   <main>
-    <ToDoList />
+    <to-do-list />
   </main>
 </template>
