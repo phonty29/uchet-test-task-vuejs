@@ -108,6 +108,8 @@
     }
     .search-box {
         padding: 8px;
+        padding-left: 32px;
+        background: url("/search.png") no-repeat left;
         font-size: 14px;
         background-color: inherit;
         border: 1px solid #ccc;
