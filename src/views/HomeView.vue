@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script>
   import ToDoList from '@/components/ToDoList.vue';
 </script>
 

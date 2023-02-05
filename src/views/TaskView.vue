@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<script>
     import ToDoTask from '@/components/ToDoTask.vue';
     import {useTodoStore} from '@/stores/todo';
     export default {
