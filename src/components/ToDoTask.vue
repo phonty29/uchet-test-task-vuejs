@@ -1,4 +1,4 @@
-<script>
+<script setup lang="ts">
     import {useTodoStore} from '@/stores/todo';
     import ElementsOfTaskLink from '@/utils/enum/ElementsOfTaskLink';
     export default {

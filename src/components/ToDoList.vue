@@ -1,4 +1,4 @@
-<script>
+<script setup lang="ts">
     import LocalStorageService from '@/service/localStorageApi';
     import FilterMethods from '@/utils/enum/FilterMethods';
     import ToDoTask from '@/components/ToDoTask.vue';
