@@ -114,7 +114,7 @@
         border: 1px solid #ccc;
         flex-grow: 1;
         border-radius: 4px;
-        color: white;
+        color: hsla(160, 100%, 37%, 1);
         margin: 8px 0px;
     }
     .search-box::placeholder {
