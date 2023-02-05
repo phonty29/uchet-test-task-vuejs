@@ -27,22 +27,31 @@
           const newContent = event.target.value.trim(); 
           this.todoStore.editTask(this.task, newContent);
           this.isEditMode = false;
+        },
+        redirectTo(event) {
+          if (!event.target.closest(".edit-button") && 
+              !event.target.closest(".delete-button") &&
+              !event.target.closest(".checkbox-container") &&
+              !event.target.closest(".edit-input")
+            ) {
+            this.$router.push(`/task/${this.task.id}`);
+          }
         }
       }
    }
 </script>
 
 <template>
-    <div class="todo-item">
+    <a class="todo-item"  @click="redirectTo">
         <label class="checkbox-container">
             <input type="checkbox" v-model="task.completed" @click="markAs" />
             <span class="checkbox"></span>
         </label>
         <p v-if="!isEditMode" :class="{ completed: task.completed }"> {{ task.content }} </p>
-        <input v-else :value="task.content"  @keyup.enter="editTask" />
-        <button @click="isEditMode = !isEditMode" class="delete-button"> E </button>
+        <input v-else :value="task.content"  @keyup.enter="editTask" class="edit-input"/>
+        <button @click="isEditMode = !isEditMode" class="edit-button"> E </button>
         <button @click="removeTask(task)" class="delete-button"> X </button>
-    </div> 
+      </a> 
 </template>
 
 <style scoped>
@@ -119,6 +128,13 @@
         text-decoration: line-through;
         text-decoration-thickness: 3px;
         color: #ccc;
+    }
+    .edit-button {
+        border: none;
+        font-weight: bold;
+        background-color: rgb(20, 20, 20);
+        color: white;
+        font-size: 18px;
     }
     .delete-button {
         border: none;

@@ -12,33 +12,37 @@
         data() {
             return {
                 filterMethods: FilterMethods,
-                filterBy: FilterMethods.BY_ALL
+                filterBy: FilterMethods.BY_ALL,
+                searchedTask: ""
             }
         }, 
         computed: {
             filteredTasks() {
                 switch (this.filterBy) {
                     case this.filterMethods.BY_COMPLETED:
-                        return this.todoStore.getTasks.filter(t => t.completed);
+                        return this.todoStore.getSearchedTasks(this.searchedTask).filter(t => t.completed);
                     case this.filterMethods.BY_INCOMPLETED:
-                        return this.todoStore.getTasks.filter(t => !t.completed);
+                        return this.todoStore.getSearchedTasks(this.searchedTask).filter(t => !t.completed);
                     default:
-                        return this.todoStore.getTasks;
+                        return this.todoStore.getSearchedTasks(this.searchedTask);
                 }
             },
             incompletedTasks() {
                 return this.todoStore.getTasks.filter((t) => !t.completed).length;
-            }  
+            }
         },
         methods: {
-            addTask(event) {
-                const content = event.target.value.trim();
+            addTask() {
+                const content = prompt("Add new task");
                 if (!content) return;
                 this.todoStore.addTask(content);
-                event.target.value = "";
             },
             deleteCompletedTasks() {
                 this.todoStore.deleteCompletedTasks();
+            },
+            searchTask(event) {
+                const content = event.target.value.trim();
+                this.searchedTask = content;
             }
         }
     }
@@ -62,8 +66,10 @@
             Удалить выделенные
         </div>
     </div>
-
-    <input autofocus class="add-task" placeholder="Введите новую задачу" @keyup.enter="addTask" /> 
+    <div style="display: flex;">
+        <input autofocus class="add-task" placeholder="Ищите задачу" @input="searchTask" /> 
+        <button class="green" @click="addTask">+</button>
+    </div>
     <to-do-task v-for="task in filteredTasks" :task="task" :key="task.id" />
 </template>
 
@@ -93,9 +99,9 @@
     .add-task {
         padding: 8px;
         font-size: 14px;
-        width: 100%;
         background-color: inherit;
         border: 1px solid #ccc;
+        flex-grow: 1;
         border-radius: 4px;
         color: white;
         margin: 8px 0px;
