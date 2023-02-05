@@ -1,56 +1,44 @@
 <script>
-    import LocalStorageService from '../api/localStorageApi';
+    import LocalStorageService from '@/service/localStorageApi';
+    import FilterMethods from '@/utils/enum/FilterMethods';
+    import ToDoTask from '@/components/ToDoTask.vue';
+    import {useTodoStore} from '@/stores/todo';
     export default {
+        components: {ToDoTask},
+        setup() {
+            const todoStore = useTodoStore();
+            return { todoStore };
+        },
         data() {
             return {
-                todos: LocalStorageService.getToDoTasks(),
-                id: LocalStorageService.getId(),
-                filterBy: "all",
-                showAll: false
+                filterMethods: FilterMethods,
+                filterBy: FilterMethods.BY_ALL
             }
         }, 
         computed: {
-            filteredTodos() {
-                return this.filterBy ? this.todos : this.todos.filter((t) => !t.completed)
+            filteredTasks() {
+                switch (this.filterBy) {
+                    case this.filterMethods.BY_COMPLETED:
+                        return this.todoStore.getTasks.filter(t => t.completed);
+                    case this.filterMethods.BY_INCOMPLETED:
+                        return this.todoStore.getTasks.filter(t => !t.completed);
+                    default:
+                        return this.todoStore.getTasks;
+                }
             },
-            incompletedTodos() {
-                return this.todos.filter((t) => !t.completed)
+            incompletedTasks() {
+                return this.todoStore.getTasks.filter((t) => !t.completed).length;
             }  
         },
-        watch: {
-            todos: {
-                handler(todos) {
-                    localStorage.setItem("todos", JSON.stringify(todos))
-                },
-                deep: true
-            }, 
-            id: {
-                handler(id) {
-                    localStorage.setItem("id", id)
-                }
-            }
-        },
         methods: {
-            addTodo(e) {
-                const value = e.target.value.trim();
-                if (value === "") {
-                    return;
-                }      
-                this.todos.push({
-                    id: this.id++,
-                    task: value,
-                    completed: false,
-                })
-                e.target.value = ''
-            }, 
-            removeTodo(todo) {
-                // Removes a todo from the array at the index of todo and of 1 obj
-                this.todos.splice(this.todos.indexOf(todo), 1)
-                // Resets id counter to 0 if array is empty
-                if (this.todos.length === 0) {
-                    this.id = 0
-                    localStorage.setItem("id", 0)
-                }
+            addTask(event) {
+                const content = event.target.value.trim();
+                if (!content) return;
+                this.todoStore.addTask(content);
+                event.target.value = "";
+            },
+            deleteCompletedTasks() {
+                this.todoStore.deleteCompletedTasks();
             }
         }
     }
@@ -58,35 +46,25 @@
 
 <template>
     <div class="menu">
-        <p class="tasks-left-text"> Осталось задач {{ incompletedTodos.length }} </p>
+        <p class="tasks-left-text"> Осталось задач 
+            <span class="green">{{ incompletedTasks }} </span>
+        </p>
         <div class="filter">
-          <h3>Filter by: </h3>
+          <h3>Фильтровать по:</h3>
           <select v-model="filterBy" class="filter-box">
-            <option value="all">All</option>
-            <option value="completed">Completed tasks</option>
-            <option value="uncompleted">Uncompleted tasks</option>
+            <option :value="filterMethods.BY_ALL">Всем</option>
+            <option :value="filterMethods.BY_COMPLETED">Завершенным</option>
+            <option :value="filterMethods.BY_INCOMPLETED">Незавершенным</option>
           </select>
           <span class="focus"></span>
         </div>
+        <div class="delete-completed" @click="deleteCompletedTasks">
+            Удалить выделенные
+        </div>
     </div>
 
-    <input 
-        autofocus
-        class="add-task"
-        placeholder="Введите новую задачу"
-        @keyup.enter="addTodo"
-    > 
-    <div v-for="todo in filteredTodos" :key="todo.id" class="todo-item">
-        <label class="checkbox-container">
-            <input 
-                type="checkbox"
-                v-model="todo.completed"
-                >
-            <span class="checkbox"> </span>
-        </label>
-        <p :class="{ completed: todo.completed }"> {{ todo.task }} </p>
-        <button @click="removeTodo(todo)" class="delete-button"> X </button>
-    </div> 
+    <input autofocus class="add-task" placeholder="Введите новую задачу" @keyup.enter="addTask" /> 
+    <to-do-task v-for="task in filteredTasks" :task="task" :key="task.id" />
 </template>
 
 <style scoped>
@@ -129,88 +107,6 @@
         border: solid white;
         border-width: 1px;
     } 
-    .todo-item {
-        display: flex;
-        justify-content: space-between;
-        border: solid rgb(57, 57, 57);
-        border-width: 2px;
-        background-color: rgb(20, 20, 20);
-        padding: 16px;
-        color: white;
-    }
-    /* Customising checkbox guide https://www.w3schools.com/howto/howto_css_custom_checkbox.asp */
-    
-    /* Customise checkbox container */
-    .checkbox-container {
-        display: block;
-        position: relative;
-        padding-left: 35px;
-        margin-bottom: 12px;
-        cursor: pointer;
-        font-size: 22px;
-        -webkit-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-    }
-    /* Hide default checkbox */
-    .checkbox-container input {
-        position: absolute;
-        opacity: 0;
-        cursor: pointer;
-        height: 0;
-        width: 0;
-    }
-    
-    /* Create a custom checkbox */
-    .checkbox {
-        height: 25px;
-        width: 25px;
-        background-color: rgb(80, 80, 80);
-        position: absolute;
-        top: 0;
-        left: 0;
-    }
-    .checkbox-container:hover input ~ .checkbox {
-        background-color: rgb(65, 65, 65);
-    }
-    .checkbox-container input:checked ~ .checkbox {
-        background-color: rgb(55, 55, 55);
-    }
-    .checkbox:after {
-        content: "";
-        position: absolute;
-        display: none;
-    }
-    /* Show the checkbox when checked */
-    .checkbox-container input:checked ~ .checkbox:after {
-        display: block;
-    }
-    /* Style the checkbox */
-    .checkbox-container .checkbox:after {
-        left: 9px;
-        top: 5px;
-        width: 5px;
-        height: 10px;
-        border: solid white;
-        border-width: 0 3px 3px 0;
-        -webkit-transform: rotate(45deg);
-        -ms-transform: rotate(45deg);
-        transform: rotate(45deg);
-    }
-    .completed {
-        text-decoration: line-through;
-        text-decoration-thickness: 3px;
-        color: #ccc;
-    }
-    .delete-button {
-        border: none;
-        font-weight: bold;
-        background-color: rgb(20, 20, 20);
-        color: white;
-        font-size: 18px;
-    }
-
     .filter {
       display: flex;
       justify-items: center;
@@ -219,8 +115,9 @@
 
     .filter h3 {
       margin-right: 1rem;
-      min-width: 75px;
+      min-width: 135px;
     }
+
     select {
       -webkit-appearance: none;
       -moz-appearance: none;
@@ -237,6 +134,7 @@
       z-index: 1;
       outline: none;
     }
+
     select::-ms-expand {
       display: none;
     }
