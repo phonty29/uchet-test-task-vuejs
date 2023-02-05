@@ -111,7 +111,7 @@
         background-color: inherit;
         border: 1px solid #ccc;
         border-radius: 4px;
-        color: white;
+        color: hsla(160, 100%, 37%, 1);
         margin: 8px 0px;
     }
     .add-subtask::placeholder {
