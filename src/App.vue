@@ -36,7 +36,7 @@ import { RouterView } from 'vue-router';
   }
   @media screen and (max-width: 750px)  {
         h1 {
-            font-size: 2/1rem;
+            font-size: 2.1rem;
         }
   }
   @media screen and (max-width: 550px)  {
