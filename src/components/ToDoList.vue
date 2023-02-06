@@ -2,6 +2,7 @@
     import FilterMethods from '@/utils/enum/FilterMethods';
     import ToDoTask from '@/components/ToDoTask.vue';
     import {useTodoStore} from '@/stores/todo';
+    import {debounce} from '@/utils/use';
     export default {
         components: {ToDoTask},
         setup() {
@@ -40,8 +41,10 @@
                 this.todoStore.deleteCompletedTasks();
             },
             searchTask(event) {
-                const content = event.target.value.trim();
-                this.searchedTask = content;
+                debounce(() => {
+                    const content = event.target.value.trim();
+                    this.searchedTask = content;
+                }, 1000)();
             }
         }
     }
