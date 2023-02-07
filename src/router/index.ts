@@ -20,6 +20,6 @@ const router = createRouter({
       redirect: "/"
     }
   ]
-})
+});
 
-export default router
+export default router;
