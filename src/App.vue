@@ -4,8 +4,9 @@
 
 <template>
   <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
-
+    <a href="/" class="logo">
+      <img alt="Vue logo" src="@/assets/logo.svg" width="125" height="125"/>
+    </a>
     <div class="wrapper">
       <h1 class="green">Тестовое задание "Список задач"</h1>
     </div>
