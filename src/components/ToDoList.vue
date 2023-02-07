@@ -33,7 +33,7 @@
         },
         methods: {
             addTask() {
-                const content = prompt("Add new task");
+                const content = prompt("Добавить новую задачу");
                 if (!content) return;
                 this.todoStore.addTask(content);
             },
