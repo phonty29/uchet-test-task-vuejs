@@ -2,7 +2,8 @@
     import FilterMethods from '@/utils/enum/FilterMethods';
     import ToDoTask from '@/components/ToDoTask.vue';
     import {useTodoStore} from '@/stores/todo';
-    import {debounce} from '@/utils/use';
+    import {useDebounce} from '@/utils/helpers/hooks';
+    import { toImg } from '@/utils/helpers/pathTo';
     export default {
         components: {ToDoTask},
         setup() {
@@ -11,6 +12,8 @@
         },
         data() {
             return {
+                imgAddButton: toImg("add-button.png"),
+                imgTrash: toImg("trash-bin.png"),
                 filterMethods: FilterMethods,
                 filterBy: FilterMethods.BY_ALL,
                 searchedTask: ""
@@ -41,7 +44,7 @@
                 this.todoStore.deleteCompletedTasks();
             },
             searchTask(event) {
-                debounce(() => {
+                useDebounce(() => {
                     const content = event.target.value.trim();
                     this.searchedTask = content;
                 }, 1000)();
@@ -65,13 +68,13 @@
           <span class="focus"></span>
         </div>
         <div class="options-delete" @click="deleteCompletedTasks">
-            <img src="/trash-bin.png" alt="delete-completed-tasks" title="Удалить помеченные задачи">
+            <img :src="imgTrash" alt="delete-completed-tasks" title="Удалить помеченные задачи">
         </div>
     </div>
     <div class="rule">
         <input autofocus class="search-box" placeholder="Найти задачу" @input="searchTask" /> 
         <button class="rule-add-btn" >
-            <img src="/add-button.png" alt="Add task" title="Добавить новую задачу" @click="addTask">
+            <img :src="imgAddButton" alt="Add task" title="Добавить новую задачу" @click="addTask">
         </button>
     </div>
     <to-do-task v-for="task in filteredTasks" :task="task" :key="task.id" />
@@ -111,7 +114,7 @@
     .search-box {
         padding: 8px;
         padding-left: 32px;
-        background: url("/search.png") no-repeat left;
+        background: url("/src/assets/img/search.png") no-repeat left;
         font-size: 14px;
         background-color: inherit;
         border: 1px solid #ccc;

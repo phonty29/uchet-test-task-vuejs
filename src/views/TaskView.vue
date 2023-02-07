@@ -1,5 +1,6 @@
 <script>
     import {useTodoStore} from '@/stores/todo';
+    import {toImg} from '@/utils/helpers/pathTo';
     export default {
         setup() {
                 const todoStore = useTodoStore();
@@ -7,6 +8,8 @@
         },
         data() {
             return {
+                imgEdit: toImg("edit-document.png"),
+                imgDeleteSubtask: toImg("delete-subtask.png"),
                 isEditMode: false
             }
         },
@@ -45,7 +48,7 @@
                <input v-else :value="getTask.content" @keyup.enter="editParentTask" class="edit-input" />
             </p>
             <button class="btn edit-btn">
-                <img src="/edit-document.png" alt="edit-task" title="Изменить задачу" @click="isEditMode = !isEditMode">
+                <img :src="imgEdit" alt="edit-task" title="Изменить задачу" @click="isEditMode = !isEditMode">
             </button>
         </div> 
         <input autofocus class="add-subtask" placeholder="Введите новую подзадачу" @keyup.enter="addSubtask" />
@@ -54,7 +57,7 @@
             <div class="subtask-item">
                 <p> {{ subtask.content }} </p>
                 <button class="btn delete-btn">
-                    <img src="/delete-subtask.png" alt="delete-subtask" title="Удалить подзадачу" @click="removeSubtask(subtask)">
+                    <img :src="imgDeleteSubtask" alt="delete-subtask" title="Удалить подзадачу" @click="removeSubtask(subtask)">
                 </button>
             </div> 
         </div>

@@ -1,6 +1,7 @@
 <script>
     import {useTodoStore} from '@/stores/todo';
     import ElementsOfTaskLink from '@/utils/enum/ElementsOfTaskLink';
+    import { toImg } from '@/utils/helpers/pathTo';
     export default {
       props: {
         task: {
@@ -10,6 +11,8 @@
       },
       data() {
         return {
+          imgEdit: toImg("edit-document.png"),
+          imgClose: toImg("close.png"),
           isEditMode: false,
           elementsOfTaskLink: ElementsOfTaskLink
         }
@@ -53,10 +56,10 @@
         <input v-else :value="task.content"  @keyup.enter="editTask" class="edit-input"/>
         <div class="task-buttons">
           <button class="task-btn edit-btn">
-            <img src="/edit-document.png" alt="Edit task" title="Изменить задачу" @click="isEditMode = !isEditMode">
+            <img :src="imgEdit" alt="Edit task" title="Изменить задачу" @click="isEditMode = !isEditMode">
           </button>
           <button class="task-btn delete-btn">
-            <img src="/close.png" alt="Delete task" title="Удалить задачу" @click="removeTask(task)">
+            <img :src="imgClose" alt="Delete task" title="Удалить задачу" @click="removeTask(task)">
           </button>
         </div>
       </a> 

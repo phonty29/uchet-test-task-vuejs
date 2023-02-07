@@ -1,4 +1,4 @@
-const debounce = (func: () => void, timeout: number) => {
+const useDebounce = (func: () => void, timeout: number) => {
     let timer: number;
     return () => {
       clearTimeout(timer);
@@ -6,4 +6,4 @@ const debounce = (func: () => void, timeout: number) => {
     };
 }
 
-export {debounce};
+export {useDebounce};
